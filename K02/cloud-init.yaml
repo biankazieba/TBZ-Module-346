@@ -6,7 +6,7 @@ users: # user wird definiert
     home: /home/ubuntu # pfad vom user
     shell: /bin/bash # pfad vom shell
     ssh_authorized_keys: # ssh key des users
-      - ssh-rsa key-0ddedab44aa0408b6
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDFKN5sfN8egDC/e101ZXREXu6Wgrk4mgey6F2ckgvgkG3wWFfbuM141Jqcoq2pVUKJ7DEw8/HKxNtsVrA/iNbdNJaJNBN0M6G/irH//qpAqdDS3RyPyb/L/DrefDjmXzs9htcIMNt5Rx36pKuprMFkVdTZKybzFx5TqHo7GGmvkJ2r5LvNw2h2esHdKdGq8rfYnBeGdxxcYldHQuYbg4DZyDdHYiQSeZDq5XGye0Y1Ew+NvIYpRKaXYllY7hRVn7keD6Y9I61ZRKkILraSq0QPHyy2ObjM1+MP0DMPCdzke4d4xm+bPYd7DkNGaJlZ6uCrI8pBrtonRqvTaIVxQjizbh/DY7cIa+99AknNzol/vMjplvO2o594r3cfUG1v2I9FNBVPrhko0KMGLfhjG79xhAwz1RBhmqOCnAlLCDIDay35y6V8Dx44EXrLS0MUYZkmBjQhDO16N6FYw6Bt/bXxbA/YmU5gxffBCoBJBNJO8KTT1ZdxMfIWwDuuoaBg94k= Bianka@bibiischtoll
 ssh_pwauth: false # passwort-deaktiviertung ausgeschaltet
 disable_root: false # root user deaktivieren
 package_update: true # package sollen updated werden
