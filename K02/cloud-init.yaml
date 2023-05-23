@@ -6,7 +6,7 @@ users: # user wird definiert
     home: /home/ubuntu # pfad vom user
     shell: /bin/bash # pfad vom shell
     ssh_authorized_keys: # ssh key des users
-      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC0nkdkOzsm4M5uTgVFQtiC67N0/7Q1aFq3J+ed4+2q0K4uo8BRi0sFziK7joPWygfst19ZR+Jg7I+o4qiMMJtF7HLBkgE6LavUR93DZxrbFeVvrBHkYus4d6ZYcivPZ8yNqT2XR/W3a9IL9yVDc5xHN3YpH1hqU89aBJEmFhJBcHt7WeVP6/4wJ1JcfF7irQqi346HFaYlRamgsiv2W3EktRSo15icRSSkPry1s40uI6Fc0H6DycQpuhFXZS6BNXPjUmBoifgTeSoa70ssA1bZMZvfsrY84lLdPvitGT8h3lDrT9wMNU+fGIgGPNaIkz7+hqSSXKOaoQf6U9+3TkIX
+      - ssh-rsa key-0ddedab44aa0408b6
 ssh_pwauth: false # passwort-deaktiviertung ausgeschaltet
 disable_root: false # root user deaktivieren
 package_update: true # package sollen updated werden
