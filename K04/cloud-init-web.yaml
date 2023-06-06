@@ -1,0 +1,51 @@
+#cloud-config
+users:
+  - name: ubuntu
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: users, admin
+    home: /home/ubuntu
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCVBzVe9uAh8ku5bhot+WWVr8B91UUlq4i4oe9ah2CKeJu8dYYYrSPczS9+MXM3yIyujE89ZXBzcCEy7f6nd5cidvGox4FtsyczlZp0GeQguqGbxixBeDQl0EmwEcwUh2IUwU+P7I1zl1ZD8xoy3TLtZ2aTvu0hvb9r3gaGrADjZGgsaJ9FYybB8z/IpOwUnYOtnT500IJpH3TT5vU4PVBKjsHqhzq6M5mxKiWAy6xF0Ma1HzsH3+rp1wMKxnCpXpr1UXPgoyzPIeclJgBYxkQpJwG6Nuj9yAs6EOEhHPpoJMCRfhIBv0T/m0kustC5qIWqW89xXv9NJtc4fvh6rNId aws-key
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDFKN5sfN8egDC/e101ZXREXu6Wgrk4mgey6F2ckgvgkG3wWFfbuM141Jqcoq2pVUKJ7DEw8/HKxNtsVrA/iNbdNJaJNBN0M6G/irH//qpAqdDS3RyPyb/L/DrefDjmXzs9htcIMNt5Rx36pKuprMFkVdTZKybzFx5TqHo7GGmvkJ2r5LvNw2h2esHdKdGq8rfYnBeGdxxcYldHQuYbg4DZyDdHYiQSeZDq5XGye0Y1Ew+NvIYpRKaXYllY7hRVn7keD6Y9I61ZRKkILraSq0QPHyy2ObjM1+MP0DMPCdzke4d4xm+bPYd7DkNGaJlZ6uCrI8pBrtonRqvTaIVxQjizbh/DY7cIa+99AknNzol/vMjplvO2o594r3cfUG1v2I9FNBVPrhko0KMGLfhjG79xhAwz1RBhmqOCnAlLCDIDay35y6V8Dx44EXrLS0MUYZkmBjQhDO16N6FYw6Bt/bXxbA/YmU5gxffBCoBJBNJO8KTT1ZdxMfIWwDuuoaBg94k= Bianka@bibiischtoll
+ssh_pwauth: false
+disable_root: false
+package_update: true
+packages:
+  - apache2
+  - php
+  - libapache2-mod-php
+  - php-mysqli
+  - adminer
+runcmd:
+  - sudo a2enconf adminer
+  - sudo systemctl restart apache2
+write_files:
+  - path: /var/www/html/db.php
+    content: |
+      <?php
+        //database
+        $servername = "10.0.100.70";
+        $username = "admin";
+        $password = "password";
+        $dbname = "mysql";
+
+        // Create connection
+        $conn = new mysqli($servername, $username, $password, $dbname);
+        // Check connection
+        if ($conn->connect_error) {
+                die("Connection failed: " . $conn->connect_error);
+        }
+
+        $sql = "select Host, User from mysql.user;";
+        $result = $conn->query($sql);
+        while($row = $result->fetch_assoc()){
+                echo($row["Host"] . " / " . $row["User"] . "<br />");
+        }
+        //var_dump($result);
+      ?>
+  - path: /var/www/html/info.php
+    content: |
+      <?php
+      phpinfo();
+      ?>
