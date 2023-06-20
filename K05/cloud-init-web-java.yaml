@@ -1,0 +1,59 @@
+#cloud-config
+users:
+  - name: ubuntu
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: users, admin
+    home: /home/ubuntu
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCVBzVe9uAh8ku5bhot+WWVr8B91UUlq4i4oe9ah2CKeJu8dYYYrSPczS9+MXM3yIyujE89ZXBzcCEy7f6nd5cidvGox4FtsyczlZp0GeQguqGbxixBeDQl0EmwEcwUh2IUwU+P7I1zl1ZD8xoy3TLtZ2aTvu0hvb9r3gaGrADjZGgsaJ9FYybB8z/IpOwUnYOtnT500IJpH3TT5vU4PVBKjsHqhzq6M5mxKiWAy6xF0Ma1HzsH3+rp1wMKxnCpXpr1UXPgoyzPIeclJgBYxkQpJwG6Nuj9yAs6EOEhHPpoJMCRfhIBv0T/m0kustC5qIWqW89xXv9NJtc4fvh6rNId aws-key
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDFKN5sfN8egDC/e101ZXREXu6Wgrk4mgey6F2ckgvgkG3wWFfbuM141Jqcoq2pVUKJ7DEw8/HKxNtsVrA/iNbdNJaJNBN0M6G/irH//qpAqdDS3RyPyb/L/DrefDjmXzs9htcIMNt5Rx36pKuprMFkVdTZKybzFx5TqHo7GGmvkJ2r5LvNw2h2esHdKdGq8rfYnBeGdxxcYldHQuYbg4DZyDdHYiQSeZDq5XGye0Y1Ew+NvIYpRKaXYllY7hRVn7keD6Y9I61ZRKkILraSq0QPHyy2ObjM1+MP0DMPCdzke4d4xm+bPYd7DkNGaJlZ6uCrI8pBrtonRqvTaIVxQjizbh/DY7cIa+99AknNzol/vMjplvO2o594r3cfUG1v2I9FNBVPrhko0KMGLfhjG79xhAwz1RBhmqOCnAlLCDIDay35y6V8Dx44EXrLS0MUYZkmBjQhDO16N6FYw6Bt/bXxbA/YmU5gxffBCoBJBNJO8KTT1ZdxMfIWwDuuoaBg94k= Bianka@bibiischtoll
+ssh_pwauth: true
+disable_root: false
+package_update: true
+packages:
+  - curl
+  - wget
+  - nginx
+  - openjdk-18-jre
+write_files:
+  - content: |
+      [Unit]
+      Description=Demo Shop
+      After=syslog.target
+      [Service]
+      WorkingDirectory=/var/www/app
+      User=www-data
+      ExecStart=java -jar /var/www/app/shopdemo-1.0.0.jar --spring.config.additional-location=production.properties SuccessExitStatus=143 
+      Restart=always
+      RestartSec=10
+      [Install] 
+      WantedBy=multi-user.target
+    path: /etc/systemd/system/shop-app.service
+  - content: |
+      server {
+        listen        80;
+        server_name   3.94.216.248;
+        location / {
+          proxy_pass         http://127.0.0.1:5001;
+          proxy_http_version 1.1;
+          proxy_set_header   Upgrade $http_upgrade;
+          proxy_set_header   Connection keep-alive;
+          proxy_set_header   Host $host;
+          proxy_cache_bypass $http_upgrade;
+          proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header   X-Forwarded-Proto $scheme;
+        }
+      }
+    path: /home/ubuntu/nginx
+runcmd:
+  - sudo mkdir /var/www
+  - sudo mkdir /var/www/app
+  - sudo git clone https://gitlab.com/ch-tbz-it/Stud/m346/m346scripts.git
+  - sudo sed -i 's/<your-connection-string>/jdbc:mysql:\/\/172.31.89.211:3306\/shop/g' ./m346scripts/KN05/java/production.properties
+  - sudo cp -r ./m346scripts/KN05/java/* /var/www/app/
+  - sudo systemctl enable shop-app.service
+  - sudo systemctl start shop-app.service
+  - sudo service nginx start
+  - sudo cp /home/ubuntu/nginx /etc/nginx/sites-available/default
+  - sudo nginx -s reload
